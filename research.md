@@ -184,6 +184,8 @@ Together, the five give Alex two of his three specific concerns (image energy, h
 
 User approval: Review the completed research directly. Confirm that sources exist and support the claims the project will use, correct the document as needed, and explicitly approve the selected features before developing the specification. The agent cannot complete this approval on the user's behalf.
 
+**Approved by the user on 2026-09-21.** The five selected features above (image-generation bucket, coding-agent range, video-streaming comparison, video-call comparison, visible confidence/uncertainty labels) are confirmed as final for the specification stage.
+
 ## Commands
 
 ### Start research
