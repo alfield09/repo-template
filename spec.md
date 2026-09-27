@@ -95,9 +95,9 @@ For each feature, define:
 
 **Behavior, inputs, outputs:** every value-producing row in the calculator (existing text-model rows, and all four new features above, plus the pre-existing gaming row) gets a short inline label next to its number, drawn from a four-tier taxonomy:
 
-1. **Peer-reviewed with stated range** — existing EcoLogits text-model rows; Feature 2's coding-agent range (paired with its extrapolation caveat); Feature 4's video-call range.
+1. **Peer-reviewed with stated range** — existing EcoLogits text-model rows; Feature 2's coding-agent range (paired with its extrapolation caveat).
 2. **Single-point estimate, no confidence range given** — Feature 1's image-generation figure.
-3. **Rough / well-sourced but limited** — Feature 3's streaming figure (sourced, but not region-adjusted); Feature 4's range (sourced, but the authors themselves call it rough).
+3. **Rough / well-sourced but limited** — Feature 3's streaming figure (sourced, but not region-adjusted); Feature 4's range (sourced and peer-reviewed, but the authors themselves call their own estimates rough — this self-acknowledged limitation is why it sits in this tier rather than tier 1).
 4. **No data / unsourced** — water values for image, video-gen (if ever added), and streaming rows; the pre-existing gaming wattage figure, which has no citation in the original calculator.
 
 Exact visual treatment (badge, icon, inline text) is left to the build phase, not fixed here.
@@ -113,6 +113,8 @@ Exact visual treatment (badge, icon, inline text) is left to the build phase, no
 ## User approval
 
 Review the completed specification directly and explicitly approve it before planning begins. The agent cannot complete this approval on the user's behalf.
+
+**Approved by the user on 2026-09-27.** The goal and all five features above (image-generation bucket, coding-agent range, video-streaming comparison, video-call comparison, visible confidence/uncertainty labels), including the three corrections from the verification pass, are confirmed as final for planning.
 
 ## Out of scope
 

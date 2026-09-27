@@ -191,7 +191,44 @@ const structuredData = [
             <label for="aipf-gaming-device">Setup</label>
             <select id="aipf-gaming-device"></select>
           </div>
-          <p class="aipf-hint">Rough estimate: hours played times the device's power draw, costed on the same regional grid as your AI use, and added into the totals above.</p>
+          <p class="aipf-hint">Rough estimate: hours played times the device's power draw, costed on the same regional grid as your AI use, and added into the totals above.<span class="aipf-tier aipf-tier-none" title="This wattage figure carries no citation — it was never sourced, just estimated.">Unsourced</span></p>
+        </div>
+        <div class="aipf-images">
+          <label class="aipf-images-toggle">
+            <input type="checkbox" id="aipf-images-on">
+            Also count AI-generated images
+          </label>
+          <div class="aipf-images-fields" id="aipf-images-fields" hidden>
+            <label for="aipf-images-count">Images/day</label>
+            <input type="number" id="aipf-images-count" min="0" step="1" value="5">
+          </div>
+          <p class="aipf-hint">Same figure regardless of which model you picked above — this is a general image-generation benchmark average, not a per-model estimate.<span class="aipf-tier aipf-tier-single" title="A benchmark average with no stated confidence range.">Single estimate</span> Water use for AI image generation has not been measured by any study found, so it is left out of your water total rather than guessed.<span class="aipf-tier aipf-tier-none" title="No measurement exists for this figure. Shown for transparency, not calculated from evidence.">No data</span></p>
+        </div>
+        <div class="aipf-streaming">
+          <label class="aipf-streaming-toggle">
+            <input type="checkbox" id="aipf-streaming-on">
+            Also count video streaming
+          </label>
+          <div class="aipf-streaming-fields" id="aipf-streaming-fields" hidden>
+            <label for="aipf-streaming-hours">Hours/day</label>
+            <input type="number" id="aipf-streaming-hours" min="0" step="0.5" value="1">
+          </div>
+          <p class="aipf-hint">A fixed 36 g CO₂e/hour (IEA's corrected 2019 estimate), the same regardless of which region you've selected above — this figure already bundles device, network, and data-center energy under IEA's own assumptions, unlike the AI and gaming rows, which are costed on your selected grid.<span class="aipf-tier aipf-tier-rough" title="Sourced, but not adjusted for your selected region.">Rough / limited</span> No water figure is available for streaming, so it is not included in your water total.<span class="aipf-tier aipf-tier-none" title="No measurement exists for this figure.">No data</span></p>
+        </div>
+        <div class="aipf-videocall">
+          <label class="aipf-videocall-toggle">
+            <input type="checkbox" id="aipf-videocall-on">
+            Also count video calls
+          </label>
+          <div class="aipf-videocall-fields" id="aipf-videocall-fields" hidden>
+            <label for="aipf-videocall-hours">Hours/day</label>
+            <input type="number" id="aipf-videocall-hours" min="0" step="0.5" value="1">
+            <label class="aipf-videocall-camera">
+              <input type="checkbox" id="aipf-videocall-cameraoff">
+              Camera off
+            </label>
+          </div>
+          <p class="aipf-hint">150-1,000 g CO₂e and 2-12 L water per hour with the camera on, based on a peer-reviewed study whose own authors call the estimate rough; camera off cuts both by about 96%.<span class="aipf-tier aipf-tier-rough" title="Peer-reviewed and sourced, but the study's own authors call their estimates rough.">Rough / limited</span> Shown as the full range rather than a single number, since the source doesn't give one.</p>
         </div>
         <div class="aipf-writes">
           <p class="aipf-writes-h">What it writes</p>
@@ -249,6 +286,18 @@ const structuredData = [
       <summary>How these numbers are made</summary>
       <div class="aipf-method-body">
         <p>
+          <strong>Confidence key.</strong> Every figure on this page is tagged with one of four
+          labels, shown right next to the number: <span class="aipf-tier aipf-tier-peer">Peer-reviewed range</span>
+          means a peer-reviewed study backs it with a stated confidence range;
+          <span class="aipf-tier aipf-tier-single">Single estimate</span> means it's a benchmark
+          average with no stated range; <span class="aipf-tier aipf-tier-rough">Rough / limited</span>
+          means it's sourced, but the source itself calls the estimate rough or it carries a stated
+          limitation (like not being adjusted for your region); and
+          <span class="aipf-tier aipf-tier-none">No data</span> means no measurement exists, or (for
+          the gaming add-on below) the figure was never cited in the first place. These labels
+          describe how solid a number is, not whether the underlying activity is good or bad.
+        </p>
+        <p>
           <strong>Per-model AI estimates.</strong> The energy, carbon, and water numbers for each
           prompt come from the open-source <a href="https://ecologits.ai/" target="_blank" rel="noopener">EcoLogits</a>
           library (v0.10), the same code that runs the
@@ -299,6 +348,18 @@ const structuredData = [
           reasoning (which dominates for reasoning models), tool calls, file exploration, and
           explanation, so a 100,000-token session is on the order of 1,500 lines. This is a rough
           estimate with wide uncertainty.
+        </p>
+        <p>
+          <strong>Coding/agent session range.</strong> The low and high ends of every model's
+          coding/agent session are widened beyond EcoLogits' own architecture-uncertainty range,
+          using the variance actually measured in real Claude Code sessions: roughly 0.4x to 1.9x
+          the mean, based on one person's 8-week usage log (per-prompt range ~60-290 Wh around a
+          ~150 Wh mean, and a matching ~0.4x-1.97x spread in the same person's per-day
+          figures)<a href="https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai" target="_blank" rel="noopener">[Hausfather, "The real energy use of agentic AI," 2026]</a>.
+          That ratio is applied to every model shown here, including GPT-5.5, Gemini, and others —
+          but it was only ever measured on Claude Code. There is no direct evidence other coding
+          agents vary by the same proportion; this is an extrapolation, not a per-model
+          measurement, and the on-page label next to each agent-session row says so.
         </p>
         <p>
           <strong>Your footprint.</strong> "Where you live" is a regional baseline for goods,
@@ -470,6 +531,16 @@ const structuredData = [
     // ---- Data: per-prompt model impacts from EcoLogits v0.10 (mean + 95% range) ----
     const MODELS = [{"id":"gpt-5.5","name":"GPT-5.5","group":"OpenAI","sizes":{"tweet":{"wh":0.4064,"whmin":0.2917,"whmax":0.5212,"emb":0.0241,"embmin":0.0241,"embmax":0.0241,"ml":1.4658,"mlmin":1.0518,"mlmax":1.8797},"email":{"wh":1.1791,"whmin":0.7888,"whmax":1.5694,"emb":0.0395,"embmin":0.0395,"embmax":0.0395,"ml":4.2522,"mlmin":2.8447,"mlmax":5.6597},"summary":{"wh":1.6942,"whmin":1.1203,"whmax":2.2682,"emb":0.0498,"embmin":0.0498,"embmax":0.0498,"ml":6.1098,"mlmin":4.0399,"mlmax":8.1797},"chat":{"wh":2.6601,"whmin":1.7417,"whmax":3.5784,"emb":0.0692,"embmin":0.0692,"embmax":0.0692,"ml":9.5929,"mlmin":6.2811,"mlmax":12.9047},"report":{"wh":32.279,"whmin":20.7997,"whmax":43.7584,"emb":0.6622,"embmin":0.6622,"embmax":0.6622,"ml":116.4068,"mlmin":75.0091,"mlmax":157.8045},"long":{"wh":96.6681,"whmin":62.23,"whmax":131.1063,"emb":1.9514,"embmin":1.9514,"embmax":1.9514,"ml":348.611,"mlmin":224.4178,"mlmax":472.8041},"agent":{"wh":644.1723,"whmin":414.5847,"whmax":873.76,"emb":12.9507,"embmin":12.9507,"embmax":12.9507,"ml":2323.0577,"mlmin":1495.103,"mlmax":3151.012},"novel":{"wh":3219.5382,"whmin":2071.5998,"whmax":4367.4766,"emb":64.4772,"embmin":64.4772,"embmax":64.4772,"ml":11610.5134,"mlmin":7470.7415,"mlmax":15750.2854}}},{"id":"gpt-5.5-pro","name":"GPT-5.5 Pro","group":"OpenAI","sizes":{"tweet":{"wh":20.758,"whmin":15.2479,"whmax":26.2681,"emb":2.063,"embmin":2.063,"embmax":2.063,"ml":74.859,"mlmin":54.9881,"mlmax":94.7299},"email":{"wh":48.4781,"whmin":29.7437,"whmax":67.2124,"emb":2.4102,"embmin":2.4102,"embmax":2.4102,"ml":174.8249,"mlmin":107.2638,"mlmax":242.386},"summary":{"wh":66.9581,"whmin":39.4076,"whmax":94.5086,"emb":2.6417,"embmin":2.6417,"embmax":2.6417,"ml":241.4689,"mlmin":142.1143,"mlmax":340.8234},"chat":{"wh":101.6082,"whmin":57.5274,"whmax":145.689,"emb":3.0757,"embmin":3.0757,"embmax":3.0757,"ml":366.4263,"mlmin":207.459,"mlmax":525.3935},"report":{"wh":1164.2105,"whmin":613.2001,"whmax":1715.2209,"emb":16.3859,"embmin":16.3859,"embmax":16.3859,"ml":4198.4535,"mlmin":2211.363,"mlmax":6185.5441},"long":{"wh":3474.2155,"whmin":1821.1842,"whmax":5127.2468,"emb":45.3211,"embmin":45.3211,"embmax":45.3211,"ml":12528.9476,"mlmin":6567.676,"mlmax":18490.2193},"agent":{"wh":23130.7433,"whmin":12110.535,"whmax":34150.952,"emb":295.7463,"embmin":295.7463,"embmax":295.7463,"ml":83415.629,"mlmin":43673.818,"mlmax":123157.44},"novel":{"wh":115509.4586,"whmin":60408.4155,"whmax":170610.5016,"emb":1448.6776,"embmin":1448.6776,"embmax":1448.6776,"ml":416557.9101,"mlmin":217848.8553,"mlmax":615266.9648}}},{"id":"gpt-5.4-mini","name":"GPT-5.4 mini","group":"OpenAI","sizes":{"tweet":{"wh":0.041,"whmin":0.0108,"whmax":0.0711,"emb":0.0011,"embmin":0.0004,"embmax":0.0018,"ml":0.1477,"mlmin":0.039,"mlmax":0.2564},"email":{"wh":0.133,"whmin":0.0342,"whmax":0.2317,"emb":0.0024,"embmin":0.001,"embmax":0.0039,"ml":0.4795,"mlmin":0.1234,"mlmax":0.8356},"summary":{"wh":0.1943,"whmin":0.0498,"whmax":0.3388,"emb":0.0033,"embmin":0.0013,"embmax":0.0053,"ml":0.7008,"mlmin":0.1798,"mlmax":1.2217},"chat":{"wh":0.3093,"whmin":0.0791,"whmax":0.5395,"emb":0.005,"embmin":0.002,"embmax":0.008,"ml":1.1155,"mlmin":0.2854,"mlmax":1.9457},"report":{"wh":3.8366,"whmin":0.9771,"whmax":6.6961,"emb":0.0563,"embmin":0.0225,"embmax":0.0901,"ml":13.8358,"mlmin":3.5236,"mlmax":24.148},"long":{"wh":11.5045,"whmin":2.9291,"whmax":20.08,"emb":0.1678,"embmin":0.0671,"embmax":0.2684,"ml":41.4884,"mlmin":10.5631,"mlmax":72.4137},"agent":{"wh":76.688,"whmin":19.524,"whmax":133.8523,"emb":1.1167,"embmin":0.4467,"embmax":1.7867,"ml":276.558,"mlmin":70.4083,"mlmax":482.7073},"novel":{"wh":383.3997,"whmin":97.6029,"whmax":669.1964,"emb":5.5745,"embmin":2.2298,"embmax":8.9193,"ml":1382.6414,"mlmin":351.9819,"mlmax":2413.3008}}},{"id":"claude-opus-4-8","name":"Claude Opus 4.8","group":"Anthropic","sizes":{"tweet":{"wh":0.2673,"whmin":0.1938,"whmax":0.3408,"emb":0.013,"embmin":0.013,"embmax":0.013,"ml":0.9982,"mlmin":0.6301,"mlmax":1.3662},"email":{"wh":0.818,"whmin":0.5701,"whmax":1.0659,"emb":0.0238,"embmin":0.0238,"embmax":0.0238,"ml":3.0632,"mlmin":1.8537,"mlmax":4.2727},"summary":{"wh":1.1852,"whmin":0.821,"whmax":1.5493,"emb":0.0309,"embmin":0.0309,"embmax":0.0309,"ml":4.4398,"mlmin":2.6693,"mlmax":6.2103},"chat":{"wh":1.8735,"whmin":1.2914,"whmax":2.4557,"emb":0.0444,"embmin":0.0444,"embmax":0.0444,"ml":7.0211,"mlmin":4.1987,"mlmax":9.8434},"report":{"wh":22.9837,"whmin":15.7164,"whmax":30.2509,"emb":0.4575,"embmin":0.4575,"embmax":0.4575,"ml":86.179,"mlmin":51.0998,"mlmax":121.2581},"long":{"wh":68.8752,"whmin":47.0752,"whmax":90.6752,"emb":1.3555,"embmin":1.3555,"embmax":1.3555,"ml":258.2614,"mlmin":153.0588,"mlmax":363.464},"agent":{"wh":459.042,"whmin":313.7117,"whmax":604.3727,"emb":9.0083,"embmin":9.0083,"embmax":9.0083,"ml":1721.2837,"mlmin":1019.991,"mlmax":2422.5763},"novel":{"wh":2294.617,"whmin":1567.9779,"whmax":3021.256,"emb":44.9079,"embmin":44.9079,"embmax":44.9079,"ml":8604.2603,"mlmin":5098.0702,"mlmax":12110.4504}}},{"id":"claude-sonnet-4-6","name":"Claude Sonnet 4.6","group":"Anthropic","sizes":{"tweet":{"wh":0.1135,"whmin":0.0886,"whmax":0.1384,"emb":0.0072,"embmin":0.0072,"embmax":0.0072,"ml":0.4214,"mlmin":0.2881,"mlmax":0.5547},"email":{"wh":0.3424,"whmin":0.2588,"whmax":0.426,"emb":0.0148,"embmin":0.0148,"embmax":0.0148,"ml":1.2745,"mlmin":0.8414,"mlmax":1.7077},"summary":{"wh":0.495,"whmin":0.3722,"whmax":0.6178,"emb":0.0198,"embmin":0.0198,"embmax":0.0198,"ml":1.8433,"mlmin":1.2102,"mlmax":2.4764},"chat":{"wh":0.7811,"whmin":0.5849,"whmax":0.9773,"emb":0.0292,"embmin":0.0292,"embmax":0.0292,"ml":2.9097,"mlmin":1.9018,"mlmax":3.9176},"report":{"wh":9.5558,"whmin":7.1079,"whmax":12.0038,"emb":0.3186,"embmin":0.3186,"embmax":0.3186,"ml":35.6133,"mlmin":23.1103,"mlmax":48.1162},"long":{"wh":28.6313,"whmin":21.2882,"whmax":35.9744,"emb":0.9476,"embmin":0.9476,"embmax":0.9476,"ml":106.708,"mlmin":69.2157,"mlmax":144.2002},"agent":{"wh":190.8147,"whmin":141.8623,"whmax":239.7673,"emb":6.3037,"embmin":6.3037,"embmax":6.3037,"ml":711.1667,"mlmin":461.246,"mlmax":961.0873},"novel":{"wh":953.79,"whmin":709.0334,"whmax":1198.5467,"emb":31.4554,"embmin":31.4554,"embmax":31.4554,"ml":3554.8002,"mlmin":2305.3271,"mlmax":4804.2734}}},{"id":"claude-haiku-4-5-20251001","name":"Claude Haiku 4.5","group":"Anthropic","sizes":{"tweet":{"wh":0.0062,"whmin":0.0035,"whmax":0.0089,"emb":0.0003,"embmin":0.0002,"embmax":0.0004,"ml":0.0236,"mlmin":0.0114,"mlmax":0.0358},"email":{"wh":0.0194,"whmin":0.0107,"whmax":0.028,"emb":0.0007,"embmin":0.0005,"embmax":0.001,"ml":0.0735,"mlmin":0.0349,"mlmax":0.1121},"summary":{"wh":0.0281,"whmin":0.0156,"whmax":0.0407,"emb":0.001,"embmin":0.0007,"embmax":0.0014,"ml":0.1068,"mlmin":0.0506,"mlmax":0.163},"chat":{"wh":0.0446,"whmin":0.0246,"whmax":0.0645,"emb":0.0015,"embmin":0.001,"embmax":0.002,"ml":0.1693,"mlmin":0.0801,"mlmax":0.2585},"report":{"wh":0.5485,"whmin":0.3023,"whmax":0.7946,"emb":0.0173,"embmin":0.0116,"embmax":0.0231,"ml":2.084,"mlmin":0.9829,"mlmax":3.1851},"long":{"wh":1.6439,"whmin":0.9059,"whmax":2.3818,"emb":0.0517,"embmin":0.0344,"embmax":0.0689,"ml":6.2465,"mlmin":2.9455,"mlmax":9.5474},"agent":{"wh":10.9567,"whmin":6.038,"whmax":15.8757,"emb":0.344,"embmin":0.2293,"embmax":0.4587,"ml":41.634,"mlmin":19.6317,"mlmax":63.6363},"novel":{"wh":54.7726,"whmin":30.1826,"whmax":79.3626,"emb":1.717,"embmin":1.1447,"embmax":2.2894,"ml":208.1266,"mlmin":98.1348,"mlmax":318.1184}}},{"id":"gemini-3.1-pro-preview","name":"Gemini 3.1 Pro","group":"Google","sizes":{"tweet":{"wh":0.8453,"whmin":0.607,"whmax":1.0837,"emb":0.0521,"embmin":0.0521,"embmax":0.0521,"ml":3.4225,"mlmin":2.4575,"mlmax":4.3874},"email":{"wh":2.4033,"whmin":1.5929,"whmax":3.2136,"emb":0.0693,"embmin":0.0693,"embmax":0.0693,"ml":9.73,"mlmin":6.4492,"mlmax":13.0107},"summary":{"wh":3.4419,"whmin":2.2502,"whmax":4.6336,"emb":0.0807,"embmin":0.0807,"embmax":0.0807,"ml":13.9349,"mlmin":9.1103,"mlmax":18.7596},"chat":{"wh":5.3893,"whmin":3.4827,"whmax":7.296,"emb":0.1021,"embmin":0.1021,"embmax":0.1021,"ml":21.8193,"mlmin":14.0999,"mlmax":29.5387},"report":{"wh":65.1103,"whmin":41.2769,"whmax":88.9437,"emb":0.7585,"embmin":0.7585,"embmax":0.7585,"ml":263.6065,"mlmin":167.1144,"mlmax":360.0987},"long":{"wh":194.9386,"whmin":123.4384,"whmax":266.4387,"emb":2.1854,"embmin":2.1854,"embmax":2.1854,"ml":789.2309,"mlmin":499.7544,"mlmax":1078.7075},"agent":{"wh":1298.9363,"whmin":822.2687,"whmax":1775.604,"emb":14.4193,"embmin":14.4193,"embmax":14.4193,"ml":5258.8917,"mlmin":3329.048,"mlmax":7188.7353},"novel":{"wh":6491.6081,"whmin":4108.2694,"whmax":8874.9469,"emb":71.392,"embmin":71.392,"embmax":71.392,"ml":26282.014,"mlmin":16632.7959,"mlmax":35931.2321}}},{"id":"gemini-3.5-flash","name":"Gemini 3.5 Flash","group":"Google","sizes":{"tweet":{"wh":0.305,"whmin":0.2305,"whmax":0.3795,"emb":0.0162,"embmin":0.0162,"embmax":0.0162,"ml":1.2348,"mlmin":0.9333,"mlmax":1.5364},"email":{"wh":0.8888,"whmin":0.6355,"whmax":1.142,"emb":0.0209,"embmin":0.0209,"embmax":0.0209,"ml":3.5982,"mlmin":2.573,"mlmax":4.6234},"summary":{"wh":1.2779,"whmin":0.9055,"whmax":1.6503,"emb":0.0241,"embmin":0.0241,"embmax":0.0241,"ml":5.1738,"mlmin":3.6661,"mlmax":6.6815},"chat":{"wh":2.0076,"whmin":1.4118,"whmax":2.6035,"emb":0.0301,"embmin":0.0301,"embmax":0.0301,"ml":8.1281,"mlmin":5.7158,"mlmax":10.5404},"report":{"wh":24.3849,"whmin":16.937,"whmax":31.8328,"emb":0.2136,"embmin":0.2136,"embmax":0.2136,"ml":98.7251,"mlmin":68.5713,"mlmax":128.8789},"long":{"wh":73.0312,"whmin":50.6874,"whmax":95.375,"emb":0.6124,"embmin":0.6124,"embmax":0.6124,"ml":295.6751,"mlmin":205.2137,"mlmax":386.1366},"agent":{"wh":486.6687,"whmin":337.71,"whmax":635.6273,"emb":4.0353,"embmin":4.0353,"embmax":4.0353,"ml":1970.334,"mlmin":1367.258,"mlmax":2573.41},"novel":{"wh":2432.3763,"whmin":1687.583,"whmax":3177.1697,"emb":19.9542,"embmin":19.9542,"embmax":19.9542,"ml":9847.7523,"mlmin":6832.3716,"mlmax":12863.1329}}},{"id":"gemini-3.1-flash-lite","name":"Gemini 3.1 Flash-Lite","group":"Google","sizes":{"tweet":{"wh":0.0159,"whmin":0.0045,"whmax":0.0273,"emb":0.0008,"embmin":0.0003,"embmax":0.0012,"ml":0.0644,"mlmin":0.0182,"mlmax":0.1105},"email":{"wh":0.0478,"whmin":0.0128,"whmax":0.0827,"emb":0.0012,"embmin":0.0005,"embmax":0.0019,"ml":0.1933,"mlmin":0.0517,"mlmax":0.335},"summary":{"wh":0.069,"whmin":0.0183,"whmax":0.1197,"emb":0.0015,"embmin":0.0006,"embmax":0.0024,"ml":0.2793,"mlmin":0.074,"mlmax":0.4846},"chat":{"wh":0.1088,"whmin":0.0286,"whmax":0.189,"emb":0.002,"embmin":0.0008,"embmax":0.0032,"ml":0.4405,"mlmin":0.1159,"mlmax":0.7652},"report":{"wh":1.3299,"whmin":0.3458,"whmax":2.3141,"emb":0.0182,"embmin":0.0073,"embmax":0.0292,"ml":5.3844,"mlmin":1.3999,"mlmax":9.369},"long":{"wh":3.9846,"whmin":1.0352,"whmax":6.9339,"emb":0.0535,"embmin":0.0214,"embmax":0.0856,"ml":16.1321,"mlmin":4.1913,"mlmax":28.0729},"agent":{"wh":26.5553,"whmin":6.898,"whmax":46.2123,"emb":0.3547,"embmin":0.142,"embmax":0.5673,"ml":107.5117,"mlmin":27.9277,"mlmax":187.0957},"novel":{"wh":132.7348,"whmin":34.4741,"whmax":230.9956,"emb":1.7636,"embmin":0.7054,"embmax":2.8218,"ml":537.3921,"mlmin":139.5723,"mlmax":935.2119}}}];
 
+    // Widen every model's "agent session" energy range using the ratio Hausfather
+    // measured on real Claude Code sessions (~0.4x-1.9x the mean), replacing EcoLogits'
+    // architecture-uncertainty-only range. Extrapolated beyond Claude Code to other
+    // models without direct evidence — see the methodology section.
+    const AGENT_SESSION_RATIO = { min: 0.4, max: 1.9 };
+    for (const m of MODELS) {
+      const a = m.sizes.agent;
+      if (a) { a.whmin = a.wh * AGENT_SESSION_RATIO.min; a.whmax = a.wh * AGENT_SESSION_RATIO.max; }
+    }
+
     const SIZES = [
       { id: 'tweet',   label: 'A tweet',                 words: '40 words',      w: 38 },
       { id: 'email',   label: 'A short email',           words: '130 words',     w: 128 },
@@ -552,7 +623,13 @@ const structuredData = [
       { url: 'https://iopscience.iop.org/article/10.1088/1748-9326/ab8589', label: 'Ivanova et al. 2020 — housing and transport mitigation options.' },
       { url: 'https://www.founderspledge.com/research/climate-and-lifestyle-report', label: 'Founders Pledge, Climate & Lifestyle report — the lifestyle-cut comparison.' },
       { url: 'https://www.waterfootprint.org/', label: 'Water Footprint Network (Mekonnen & Hoekstra) and the Water Footprint Calculator — water-consumption figures and the personal water footprint.' },
+      { url: 'https://arxiv.org/html/2311.16863v3', label: 'Luccioni, Jernite & Strubell, "Power Hungry Processing" (FAccT 2024) — per-image energy for AI image generation; a single benchmark average, no water figure.' },
+      { url: 'https://www.theclimatebrink.com/p/the-real-energy-use-of-agentic-ai', label: 'Hausfather, "The real energy use of agentic AI" (2026) — measured Claude Code session variance, used to widen the coding/agent session range; extrapolated to other models without direct evidence.' },
+      { url: 'https://www.iea.org/commentaries/the-carbon-footprint-of-streaming-video-fact-checking-the-headlines', label: 'IEA, "The carbon footprint of streaming video: fact-checking the headlines" — 36 g CO2e/hour central 2019 estimate, used flat and not adjusted by region.' },
+      { url: 'https://www.purdue.edu/newsroom/archive/releases/2021/Q1/turn-off-that-camera-during-virtual-meetings,-environmental-study-says.html', label: 'Obringer et al., "The overlooked environmental footprint of increasing Internet use," Resources, Conservation and Recycling (2021) — videoconferencing carbon/water range and the camera-off reduction; the authors call their own estimates rough.' },
     ];
+    // New sources are appended above, never inserted — footnote numbers are referenced by
+    // hardcoded index (fn(1), fn(2), ...) elsewhere in the generated report text.
 
     // Daily reference points (all things that emit, so no add/save direction)
     const DAILY_ITEMS = [
@@ -635,10 +712,46 @@ const structuredData = [
 
     const BG_SWATCHES = ['#ffffff', '#fdf3e7', '#e6f4ea', '#e6eefc', '#fbe9f0'];
 
+    // AI image generation: a model-agnostic add-on (Luccioni et al., FAccT 2024 —
+    // benchmark average across image models, not per-model, and energy-only: no
+    // embodied-hardware term and no water figure exist for this benchmark).
+    const IMAGE_WH_PER_IMAGE = 2.907;
+
+    // Video streaming: a flat carbon-only figure (IEA's own already-composed estimate,
+    // device+network+data-center under IEA's assumptions), not adjusted by region.
+    // No water figure exists for this source.
+    const STREAMING_G_CO2_PER_HOUR = 36;
+
+    // Video calls: a peer-reviewed range, not a single point (Obringer et al.), with
+    // camera-off applying the study's own measured ~96% reduction. No underlying Wh
+    // figure is published, so this doesn't add to the energy (Wh) total, only carbon/water.
+    const VIDEOCALL_CO2_G_PER_HOUR = { min: 150, max: 1000 };
+    const VIDEOCALL_WATER_L_PER_HOUR = { min: 2, max: 12 };
+    const VIDEOCALL_CAMERA_OFF_FACTOR = 0.04; // ~96% reduction
+
+    // Confidence/uncertainty tiers shown inline next to every figure, not just in the
+    // methodology accordion. Each row/add-on declares which tier it belongs to.
+    const TIERS = {
+      peer:   { cls: 'peer',   label: 'Peer-reviewed range', detail: 'Backed by a peer-reviewed study with a stated confidence range.' },
+      single: { cls: 'single', label: 'Single estimate',     detail: 'A benchmark average with no stated confidence range.' },
+      rough:  { cls: 'rough',  label: 'Rough / limited',     detail: 'Sourced, but the source itself calls the estimate rough, or it carries a stated limitation (e.g. not adjusted for your region).' },
+      none:   { cls: 'none',   label: 'No data',             detail: 'No measurement exists for this figure. Shown for transparency, not calculated from evidence.' },
+    };
+    function tierBadge(tierKey, labelOverride, detailOverride) {
+      const t = TIERS[tierKey];
+      if (!t) return '';
+      const label = labelOverride || t.label;
+      const detail = (detailOverride || t.detail).replace(/"/g, '&quot;');
+      return ' <span class="aipf-tier aipf-tier-' + t.cls + '" title="' + detail + '">' + label + '</span>';
+    }
+
     let uidSeq = 1;
     const state = {
       rows: [], metric: 'carbon', loc: 'us', home: 'med', drive: 'davg', diet: 'avg', fly: 'some',
       gamingOn: false, gamingHours: 1, gamingDevice: 'console',
+      imagesOn: false, imagesCount: 5,
+      streamingOn: false, streamingHours: 1,
+      videocallOn: false, videocallHours: 1, videocallCameraOff: false,
     };
 
     let root = null;
@@ -714,6 +827,35 @@ const structuredData = [
       return [v, v, v];
     }
     function gamingDailyEnergy() { return state.gamingOn ? state.gamingHours * gamingDevice().watts : 0; } // Wh
+    // Model-agnostic: same figure regardless of model picked in the rows above.
+    // Carbon-only (no embodied-hardware term); no water figure exists for this benchmark.
+    function imagesDailyTriple(metric) {
+      if (!state.imagesOn || !state.imagesCount) return [0, 0, 0];
+      if (metric === 'carbon') {
+        const energyKwh = (state.imagesCount * IMAGE_WH_PER_IMAGE) / 1000;
+        const v = energyKwh * getLoc().grid;
+        return [v, v, v];
+      }
+      return [0, 0, 0]; // no water data for image generation — see the "No data" label in the UI
+    }
+    function imagesDailyEnergy() { return state.imagesOn ? state.imagesCount * IMAGE_WH_PER_IMAGE : 0; } // Wh
+    // Flat, not adjusted by region — see the note in the UI. Carbon-only, no water figure.
+    function streamingDailyTriple(metric) {
+      if (!state.streamingOn || !state.streamingHours) return [0, 0, 0];
+      if (metric === 'carbon') { const v = state.streamingHours * STREAMING_G_CO2_PER_HOUR; return [v, v, v]; }
+      return [0, 0, 0]; // no water data for streaming
+    }
+    // A real range, not a point estimate — mean is the range midpoint, used only to fold
+    // into the single blended total; the UI shows the full min-max range, not this midpoint.
+    function videocallDailyTriple(metric) {
+      if (!state.videocallOn || !state.videocallHours) return [0, 0, 0];
+      const range = metric === 'carbon' ? VIDEOCALL_CO2_G_PER_HOUR : VIDEOCALL_WATER_L_PER_HOUR;
+      const factor = state.videocallCameraOff ? VIDEOCALL_CAMERA_OFF_FACTOR : 1;
+      const min = state.videocallHours * range.min * factor;
+      const max = state.videocallHours * range.max * factor;
+      const mid = (min + max) / 2;
+      return [mid, min, max];
+    }
     function aiDailyTriple(metric) {
       let a = 0, b = 0, c = 0;
       for (const r of state.rows) {
@@ -723,10 +865,16 @@ const structuredData = [
       }
       const g = gamingDailyTriple(metric);
       a += g[0]; b += g[1]; c += g[2];
+      const i = imagesDailyTriple(metric);
+      a += i[0]; b += i[1]; c += i[2];
+      const s = streamingDailyTriple(metric);
+      a += s[0]; b += s[1]; c += s[2];
+      const v = videocallDailyTriple(metric);
+      a += v[0]; b += v[1]; c += v[2];
       return [a, b, c];
     }
     const aiDaily = (metric) => aiDailyTriple(metric)[0];
-    function aiDailyEnergy() { let t = 0; for (const r of state.rows) if (r.count) t += r.count * getModel(r.model).sizes[r.size].wh; return t + gamingDailyEnergy(); }
+    function aiDailyEnergy() { let t = 0; for (const r of state.rows) if (r.count) t += r.count * getModel(r.model).sizes[r.size].wh; return t + gamingDailyEnergy() + imagesDailyEnergy(); }
     function dailyFootprint(metric) {
       const loc = getLoc();
       const home = HOMES.find((x) => x.id === state.home) || HOMES[1];
@@ -867,7 +1015,10 @@ const structuredData = [
         const contr = (row.count || 0) * per;
         const share = total > 0 ? (contr / total) * 100 : 0;
         const shareStr = share >= 10 ? Math.round(share) : share.toFixed(1);
-        wrapEl.textContent = fmtMetric(per) + ' each, ' + fmtMetric(contr) + ' a day, ' + shareStr + '% of your AI ' + metricWord();
+        const badge = isCodeRow(row)
+          ? tierBadge('peer', null, 'Backed by a peer-reviewed range, widened using real measured Claude Code session variance (~0.4x-1.9x the mean). That ratio is extrapolated to this model without direct evidence it varies the same way.')
+          : tierBadge('peer');
+        wrapEl.innerHTML = fmtMetric(per) + ' each, ' + fmtMetric(contr) + ' a day, ' + shareStr + '% of your AI ' + metricWord() + badge;
       }
     }
     function setBg(color) {
@@ -1036,8 +1187,28 @@ const structuredData = [
         if (metric === 'carbon') lines.push('  ' + energyKwh.toFixed(4) + ' kWh × ' + getLoc().grid + ' g/kWh = ' + fmtMetric(g));
         else lines.push('  ' + energyKwh.toFixed(4) + ' kWh × ' + WATER_GAL_PER_KWH + ' gal/kWh (NREL) = ' + fmtMetric(g));
       }
+      if (state.imagesOn) {
+        const energyKwh = (state.imagesCount * IMAGE_WH_PER_IMAGE) / 1000;
+        lines.push('');
+        lines.push('AI images:');
+        lines.push('  ' + state.imagesCount + ' images × ' + IMAGE_WH_PER_IMAGE + ' Wh (Luccioni et al.) = ' + energyKwh.toFixed(4) + ' kWh');
+        if (metric === 'carbon') lines.push('  ' + energyKwh.toFixed(4) + ' kWh × ' + getLoc().grid + ' g/kWh = ' + fmtMetric(imagesDailyTriple(metric)[0]));
+        else lines.push('  no water data for image generation — not included');
+      }
+      if (state.streamingOn) {
+        lines.push('');
+        lines.push('Streaming:');
+        if (metric === 'carbon') lines.push('  ' + state.streamingHours + ' h × ' + STREAMING_G_CO2_PER_HOUR + ' g CO2e/h (IEA, flat — not adjusted by region) = ' + fmtMetric(streamingDailyTriple(metric)[0]));
+        else lines.push('  no water data for streaming — not included');
+      }
+      if (state.videocallOn) {
+        const t = videocallDailyTriple(metric);
+        lines.push('');
+        lines.push('Video calls (camera ' + (state.videocallCameraOff ? 'off' : 'on') + '):');
+        lines.push('  ' + state.videocallHours + ' h × range (Obringer et al.' + (state.videocallCameraOff ? ', ~96% cut for camera off' : '') + ') = ' + fmtMetric(t[1]) + ' to ' + fmtMetric(t[2]));
+      }
       lines.push('');
-      lines.push('Total (AI' + (state.gamingOn ? ' + gaming' : '') + '): ' + fmtMetric(aiDaily(metric)));
+      lines.push('Total (AI' + (state.gamingOn ? ' + gaming' : '') + (state.imagesOn ? ' + images' : '') + (state.streamingOn ? ' + streaming' : '') + (state.videocallOn ? ' + video calls' : '') + '): ' + fmtMetric(aiDaily(metric)));
       box.textContent = lines.join('\n');
     }
     function updateOutputs() {
@@ -1075,6 +1246,13 @@ const structuredData = [
         wDay += r.count * wt[0]; wMin += r.count * wt[1]; wMax += r.count * wt[2];
         rowsHtml += '<tr><td>' + escXml(md.name) + '</td><td>' + escXml(sizeLabel(r.model, SIZES.find((x) => x.id === r.size))) + '</td><td class="n">' + r.count + '</td><td class="n">' + fmtCarbon(d) + '</td><td class="n">' + fmtWater(r.count * wt[0]) + '</td></tr>';
       }
+      // AI-generated images: model-agnostic, carbon-only (no water figure exists for this benchmark).
+      if (state.imagesOn && state.imagesCount) {
+        const imgKwh = (state.imagesCount * IMAGE_WH_PER_IMAGE) / 1000;
+        const imgCarbon = imgKwh * getLoc().grid;
+        aiDay += imgCarbon; aiMin += imgCarbon; aiMax += imgCarbon; eD += state.imagesCount * IMAGE_WH_PER_IMAGE;
+        rowsHtml += '<tr><td colspan="2">AI-generated images (any model)</td><td class="n">' + state.imagesCount + '</td><td class="n">' + fmtCarbon(imgCarbon) + '</td><td class="n">no data</td></tr>';
+      }
       const aiYr = aiDay * DAYS, wYr = wDay * DAYS;
       const day = dailyFootprint('carbon');
       const pct = day > 0 ? (aiDay / day) * 100 : 0;
@@ -1110,9 +1288,11 @@ const structuredData = [
         '<h2>1. What I entered</h2>' +
         '<table><thead><tr><th>Model</th><th>Typical output</th><th class="n">Prompts/day</th><th class="n">CO₂e/day</th><th class="n">Water/day</th></tr></thead><tbody>' +
         (rowsHtml || '<tr><td colspan="5">No usage entered.</td></tr>') + '</tbody></table>' +
-        '<p class="muted">Per-prompt figures come from the EcoLogits model' + fn(1) + '; the electricity is costed on the ' + escXml(loc.label) + ' grid' + fn(2) + ', and EcoLogits’ embodied hardware emissions are kept.</p>' +
+        '<p class="muted">Per-prompt figures come from the EcoLogits model' + fn(1) + '; the electricity is costed on the ' + escXml(loc.label) + ' grid' + fn(2) + ', and EcoLogits’ embodied hardware emissions are kept.' +
+        (state.imagesOn && state.imagesCount ? ' AI images use a single benchmark average across image models' + fn(11) + ', the same regardless of which model you picked above; unlike the rows above, this figure has no embodied-hardware term and no water figure (no measurement exists), so image water is not included.' : '') + '</p>' +
         '<h2>2. My AI carbon</h2>' +
-        '<p>Across these prompts, my AI use comes to about <strong>' + fmtCarbon(aiDay) + ' per day</strong> (range ' + fmtCarbon(aiMin) + ' to ' + fmtCarbon(aiMax) + '), or <strong>' + fmtCarbon(aiYr) + ' per year</strong>, drawing about ' + fmtEnergy(eD) + ' of electricity a day.' + fn(1) + fn(2) + ' The range is EcoLogits’ 95% interval, mostly uncertainty in the parameter counts of closed models.' + fn(1) + '</p>' +
+        '<p>Across these prompts, my AI use comes to about <strong>' + fmtCarbon(aiDay) + ' per day</strong> (range ' + fmtCarbon(aiMin) + ' to ' + fmtCarbon(aiMax) + '), or <strong>' + fmtCarbon(aiYr) + ' per year</strong>, drawing about ' + fmtEnergy(eD) + ' of electricity a day.' + fn(1) + fn(2) + ' The range is EcoLogits’ 95% interval, mostly uncertainty in the parameter counts of closed models.' + fn(1) +
+        (state.rows.some((r) => r.count && isCodeRow(r)) ? ' Coding/agent session rows use a wider range instead, based on real measured Claude Code session variance and extrapolated to other models without direct evidence' + fn(12) + '.' : '') + '</p>' +
         '<h2>3. How that compares with the rest of my life</h2>' +
         '<p><span class="big">' + pctStr + '</span><br>of an average day of my own carbon footprint (' + fmtCarbon(day) + ' / day), built from:</p>' +
         '<table><tbody>' + fpHtml + '</tbody></table>' +
@@ -1179,6 +1359,32 @@ const structuredData = [
       if (gHours) gHours.addEventListener('input', (e) => { state.gamingHours = Math.max(0, Number(e.target.value) || 0); updateOutputs(); });
       const gDevice = root.querySelector('#aipf-gaming-device');
       if (gDevice) gDevice.addEventListener('change', (e) => { state.gamingDevice = e.target.value; updateOutputs(); });
+      const iOn = root.querySelector('#aipf-images-on');
+      if (iOn) iOn.addEventListener('change', (e) => {
+        state.imagesOn = e.target.checked;
+        const fields = root.querySelector('#aipf-images-fields'); if (fields) fields.hidden = !state.imagesOn;
+        updateOutputs();
+      });
+      const iCount = root.querySelector('#aipf-images-count');
+      if (iCount) iCount.addEventListener('input', (e) => { state.imagesCount = Math.max(0, Number(e.target.value) || 0); updateOutputs(); });
+      const sOn = root.querySelector('#aipf-streaming-on');
+      if (sOn) sOn.addEventListener('change', (e) => {
+        state.streamingOn = e.target.checked;
+        const fields = root.querySelector('#aipf-streaming-fields'); if (fields) fields.hidden = !state.streamingOn;
+        updateOutputs();
+      });
+      const sHours = root.querySelector('#aipf-streaming-hours');
+      if (sHours) sHours.addEventListener('input', (e) => { state.streamingHours = Math.max(0, Number(e.target.value) || 0); updateOutputs(); });
+      const vOn = root.querySelector('#aipf-videocall-on');
+      if (vOn) vOn.addEventListener('change', (e) => {
+        state.videocallOn = e.target.checked;
+        const fields = root.querySelector('#aipf-videocall-fields'); if (fields) fields.hidden = !state.videocallOn;
+        updateOutputs();
+      });
+      const vHours = root.querySelector('#aipf-videocall-hours');
+      if (vHours) vHours.addEventListener('input', (e) => { state.videocallHours = Math.max(0, Number(e.target.value) || 0); updateOutputs(); });
+      const vCamera = root.querySelector('#aipf-videocall-cameraoff');
+      if (vCamera) vCamera.addEventListener('change', (e) => { state.videocallCameraOff = e.target.checked; updateOutputs(); });
       const showCalc = root.querySelector('#aipf-show-calc');
       if (showCalc) showCalc.addEventListener('click', () => {
         const box = root.querySelector('#aipf-calc-details');
@@ -1333,6 +1539,25 @@ const structuredData = [
   .aipf-gaming-fields { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; font-family: var(--font-body); font-size: 0.82rem; }
   .aipf-gaming-fields input[type="number"] { width: 4.5rem; padding: 0.3rem 0.4rem; }
   .aipf-gaming .aipf-hint { margin: 0.5rem 0 0; }
+
+  /* Images/streaming/video-call add-ons: same layout pattern as the gaming add-on */
+  .aipf-images, .aipf-streaming, .aipf-videocall { margin: 0.9rem 0; padding: 0.75rem 0.9rem; border: 1px solid var(--border); border-radius: 6px; }
+  .aipf-images-toggle, .aipf-streaming-toggle, .aipf-videocall-toggle { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; }
+  .aipf-images-fields, .aipf-streaming-fields, .aipf-videocall-fields { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; font-family: var(--font-body); font-size: 0.82rem; }
+  .aipf-images-fields input[type="number"], .aipf-streaming-fields input[type="number"], .aipf-videocall-fields input[type="number"] { width: 4.5rem; padding: 0.3rem 0.4rem; }
+  .aipf-videocall-camera { display: flex; align-items: center; gap: 0.4rem; margin-left: 0.5rem; }
+  .aipf-images .aipf-hint, .aipf-streaming .aipf-hint, .aipf-videocall .aipf-hint { margin: 0.5rem 0 0; }
+
+  /* Confidence/uncertainty tier badges, shown inline next to figures */
+  .aipf-tier {
+    display: inline-block; margin-left: 0.4em; padding: 0.05em 0.5em; border-radius: 999px;
+    font-family: var(--font-body); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.01em;
+    white-space: nowrap; cursor: help; border: 1px solid transparent;
+  }
+  .aipf-tier-peer   { background: #e6f4ea; color: #2a6b3f; border-color: #bfe3c9; }
+  .aipf-tier-single { background: #e6eefc; color: #2b4f8c; border-color: #c3d6f7; }
+  .aipf-tier-rough  { background: #fdf3e7; color: #8a5a1e; border-color: #f2ddb8; }
+  .aipf-tier-none   { background: #fbe9f0; color: #963a5c; border-color: #f2c9da; }
 
   /* Show-the-calculations panel */
   .aipf-calc-details {

@@ -20,19 +20,34 @@ Guide planning one stage at a time. Surface dependencies, risks, and verificatio
 
 Describe the technical approach, important dependencies, and the order in which the features will be built. Explain any non-obvious choices and identify likely risks.
 
+**Build order:** confidence-label infrastructure (tier taxonomy + a small reusable inline-label mechanism) first, applied immediately to the existing EcoLogits text rows and the existing gaming row — every later feature declares its own tier as it's built, rather than retrofitting labels afterward. Then Features 1–4 in spec order. Then a final Feature 5 pass to confirm every row (old and new) is labeled and the citation footnote list is complete.
+
+**Non-obvious choice — Feature 1 is a standalone toggle, not a row.** The spec describes the image bucket as using "the same interaction pattern as existing prompt-size rows," but those rows are keyed by `{model, size}`, and the image figure is model-agnostic. Building it as a row would require a model dropdown that doesn't actually change the number, which is misleading. Decided instead to build it as a standalone checkbox + quantity toggle, matching the existing gaming add-on's pattern. This changes the *route*, not the intended result (a model-agnostic contribution to the total, still labeled per Feature 5) — recorded here per plan.md's revision rule rather than reopening spec.md.
+
+**Risks to watch:**
+- **Footnote numbering.** The report-generation code references citations by hardcoded numeric index (`fn(1)`, `fn(2)`, etc.) into the `REPORT_REFS` array. New sources (Luccioni, Hausfather, IEA, Obringer) must be *appended*, not inserted, or existing `fn()` call sites will silently point at the wrong citation.
+- **Total-calculation wiring.** Features 1, 3, and 4 are new standalone toggles (like gaming), each needing its own contribution wired into both the per-metric total functions and the top-line daily-energy function — gaming's existing dual-function pattern (`gamingDailyTriple` / `gamingDailyEnergy`) is the template to follow so nothing is double-counted or dropped from one of the two paths.
+- **Feature 2's replacement, not addition.** Widening the agent min/max must *replace* each model's existing EcoLogits-only range, not stack on top of it — otherwise sessions would show an implausibly huge combined spread.
+- **Methodology/label drift.** The inline tier labels (Feature 5) and the detailed methodology accordion text must stay consistent; a single source of truth for each tier's wording (rather than duplicating it in two places) reduces the risk of them diverging as features are added later.
+
 ## Checklist
 
 Replace or expand the implementation placeholders below with tasks specific to the approved specification.
 
 ### Approval gates
 
-- [ ] User has reviewed, verified, and approved the research claims and selected features
-- [ ] User has reviewed and approved the specification
-- [ ] User has reviewed and approved the implementation approach and task sequence
+- [x] User has reviewed, verified, and approved the research claims and selected features (2026-09-21)
+- [x] User has reviewed and approved the specification (2026-09-27)
+- [x] User has reviewed and approved the implementation approach and task sequence (2026-09-27)
 
 ### Implementation
 
-- [ ] Replace these placeholders with concrete tasks for each feature and supporting change
+- [ ] Add the confidence-label taxonomy (4 tiers) as shared data/markup, and apply it to the existing EcoLogits text rows and the existing (unsourced) gaming row
+- [ ] Feature 1 — image-generation toggle: standalone checkbox + quantity add-on (Luccioni ~2.9 Wh/image), wired into both total-calculation paths, carbon-only (no embodied-hardware term, no water), tagged "single-point estimate"
+- [ ] Feature 2 — coding-agent range: replace each model's existing agent min/max with mean × 0.4 / mean × 1.9 (Hausfather ratio), update methodology text with the prompt-vs-session distinction and the extrapolation caveat, append Hausfather to `REPORT_REFS`
+- [ ] Feature 3 — streaming toggle: standalone checkbox + hours/day add-on, flat 36 g CO2/hour regardless of region (matching the home/diet/driving/flying pattern), no water value, append IEA to `REPORT_REFS`
+- [ ] Feature 4 — video-call toggle: standalone checkbox + hours/day add-on plus camera on/off (default on), Obringer range (150–1,000 g CO2 / 2–12 L water/hour) with ~96% camera-off reduction, append Obringer to `REPORT_REFS`
+- [ ] Final Feature 5 pass: confirm every row (old and new) shows a tier label, and that the methodology accordion text matches the inline labels
 - [ ] Implement the tasks in meaningful checkpoints, keeping the plan and specification aligned with approved changes
 
 ### Verification
@@ -40,6 +55,7 @@ Replace or expand the implementation placeholders below with tasks specific to t
 - [ ] User has checked feature behavior and calculations against the specification and sources independently of the agent
 - [ ] User has confirmed factual and numerical claims have working citations and communicate important limitations or uncertainty
 - [ ] User has confirmed the project runs locally, serves all three reference profiles, and matches the specification
+- [ ] User has confirmed footnote numbering in the generated report is correct after new sources were added (no `fn()` call site points at the wrong citation)
 
 ### Delivery
 
